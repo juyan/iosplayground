@@ -9,6 +9,7 @@
 import UIKit
 import Alamofire
 import SDWebImage
+import CoreData
 
 class ViewController : UIViewController {
     
@@ -19,8 +20,10 @@ class ViewController : UIViewController {
     private let engineId = "016162742301786444656:kklkndkbri0"
     private let pageSize = 10
     private let cellReuseId = "SearchResultView"
+    private let recentResueId = "RecentReuseId"
     
     private var results: [SearchResultModel] = []
+    private var recentSearches: [String] = []
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -36,11 +39,13 @@ class ViewController : UIViewController {
         view.backgroundColor = UIColor.whiteColor()
         searchInput.placeholder = "Search for what you want on Apple.com"
         searchInput.delegate = self
+      searchInput.clearButtonMode = .Always
         tableView.dataSource = self
         tableView.delegate = self
         tableView.separatorStyle = .SingleLine
         tableView.registerNib(UINib.init(nibName: "SearchCell", bundle: nil),
                                 forCellReuseIdentifier: cellReuseId)
+        tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: recentResueId)
         tableView.rowHeight = 90
         navigationItem.title = "Search"
     }
@@ -60,34 +65,58 @@ extension ViewController: UITextFieldDelegate {
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         if let text = textField.text {
+          recentSearches = []
+          saveSearch(text)
             search(text.stringByTrimmingCharactersInSet(
                 NSCharacterSet.whitespaceAndNewlineCharacterSet()))
         }
         return true
     }
+
+  func textFieldShouldClear(textField: UITextField) -> Bool {
+    results = []
+    fetchSearch({
+      [weak self] searches in
+      self?.recentSearches = searches.map({$0.query})
+      self?.tableView.reloadData()
+    })
+    return true
+  }
 }
 
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
+        return 2
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+      if (section == 0) {
+        return recentSearches.count
+      } else {
         return results.count
+      }
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+      tableView.deselectRowAtIndexPath(indexPath, animated: true)
+
+      if (indexPath.section == 1) {
+
         if let link = results[indexPath.row].link {
             if let url = NSURL(string: link) {
                 let webVC = WebViewController(withURL: url)
                 self.navigationController?.pushViewController(webVC, animated: true)
             }
         }
+      } else {
+        searchInput.text = recentSearches[indexPath.row]
+      }
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+
+      if (indexPath.section == 1) {
         let cell : FixedSizeTableViewCell = tableView.dequeueReusableCellWithIdentifier(cellReuseId) as! FixedSizeTableViewCell
         cell.title.text = results[indexPath.row].title
         cell.snippet?.text = results[indexPath.row].snippet
@@ -101,6 +130,15 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         }
         cell.thumbnail?.sd_setImageWithURL(imageUrl, placeholderImage: UIImage(named: "PlaceHolder"))
         return cell
+      } else {
+
+        var cell = tableView.dequeueReusableCellWithIdentifier(recentResueId)
+        if cell == nil {
+          cell = UITableViewCell()
+        }
+        cell?.textLabel?.text = recentSearches[indexPath.row]
+        return cell!
+      }
     }
 }
 
@@ -133,5 +171,22 @@ extension ViewController {
                 }
             })
     }
+
+  func saveSearch(query: String) {
+    let delegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    let context = delegate.managedObjectContext
+    dispatch_async(dispatch_get_main_queue()) {
+    DBSearches.upsert(query, inWriteContext: context)
+    }
+  }
+
+  func fetchSearch(completion: ([DBSearches] -> Void)) {
+    let delegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    let context = delegate.managedObjectContext
+    dispatch_async(dispatch_get_main_queue()) {
+      let recentSearches = DBSearches.recentSearches(5, context: context)
+      completion(recentSearches)
+    }
+  }
 }
 

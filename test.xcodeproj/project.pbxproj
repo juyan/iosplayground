@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3B5641F01D5EF67800D76253 /* DBSearches.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5641EF1D5EF67800D76253 /* DBSearches.swift */; };
 		69DB9263CB800C9BFE873BE0 /* Pods_test.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 185AE5E496D134B27E0A6BBB /* Pods_test.framework */; };
 		A989A6601D57F36B003E0643 /* SearchCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A989A65F1D57F36B003E0643 /* SearchCell.xib */; };
 		A9920D721D584BCA0090C6B6 /* SDWebImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9920D711D584BCA0090C6B6 /* SDWebImage.framework */; };
@@ -25,6 +26,7 @@
 
 /* Begin PBXFileReference section */
 		185AE5E496D134B27E0A6BBB /* Pods_test.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_test.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3B5641EF1D5EF67800D76253 /* DBSearches.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBSearches.swift; sourceTree = "<group>"; };
 		A989A65F1D57F36B003E0643 /* SearchCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SearchCell.xib; sourceTree = "<group>"; };
 		A9920D711D584BCA0090C6B6 /* SDWebImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDWebImage.framework; path = "Pods/../build/Debug-iphoneos/SDWebImage/SDWebImage.framework"; sourceTree = "<group>"; };
 		A9920D771D58506C0090C6B6 /* FixedSizeTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FixedSizeTableViewCell.swift; sourceTree = "<group>"; };
@@ -110,6 +112,7 @@
 				A9DF92D21D58309A00BD76AC /* SearchResultModel.swift */,
 				A9920D771D58506C0090C6B6 /* FixedSizeTableViewCell.swift */,
 				A9920D791D59A4690090C6B6 /* WebViewController.swift */,
+				3B5641EF1D5EF67800D76253 /* DBSearches.swift */,
 			);
 			path = test;
 			sourceTree = "<group>";
@@ -244,6 +247,7 @@
 				A9E367F11D57E5240099191F /* ViewController.swift in Sources */,
 				A9E367EF1D57E5240099191F /* AppDelegate.swift in Sources */,
 				A9E367F71D57E5240099191F /* test.xcdatamodeld in Sources */,
+				3B5641F01D5EF67800D76253 /* DBSearches.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -344,6 +348,7 @@
 					"$(PROJECT_DIR)/build/Debug-iphoneos/SDWebImage",
 				);
 				INFOPLIST_FILE = test/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -365,6 +370,7 @@
 					"$(PROJECT_DIR)/build/Debug-iphoneos/SDWebImage",
 				);
 				INFOPLIST_FILE = test/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
